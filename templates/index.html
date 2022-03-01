@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Sms Spam classification</title>
+</head>
+<body>
+    
+    <div class="container">
+    <h1 class="display-4 text-center">An SMS spam classification APP</h1>
+    <form action="{{ url_for('index') }}" method="POST">
+        <div class="form-group">
+        <label for="sms">Please enter your SMS</label>
+        <textarea id="sms" name="sms" cols="15" rows="2" class="form-control">{% if sms %}{{sms}}{% endif %}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="classifier">Choose your classifier</label>
+            <select name="classifier" id="classifier">
+                <option value="LSTM" {% if classifier and classifier == 'LSTM'%}selected{% endif %}>LSTM classifier</option>
+                <option value="MNB" {% if classifier and classifier == 'MNB'%}selected{% endif %}>Multi Naive Bayes</option>
+                <option value="ETC" {% if classifier and classifier == 'ETC'%} selected {% endif %}>Extra Tree Classifier</option>
+                <option value="All" {% if classifier and classifier == 'ALL'%}selected{% endif %}>All classifiers</option>
+            </select>
+        </div>
+
+        <button class="btn btn-outline-primary" type="submit">Classify</button>
+    </form>
+    {% if proba_spam and proba_spam > 0.5 %}
+        <hr>
+        <h3 class="display-5 text-danger text-center">This is a spam with proba equals to {{ '%0.2f'| format(proba_spam*100|float) }}%</h3>
+    {% endif %}
+    {% if proba_spam and proba_spam < 0.5 %}
+        <hr>
+        <h3 class="display-5 text-success text-center">This is not a spam with proba equals to {{ '%0.2f'| format((1 - proba_spam)*100|float)}}%</h3>
+    {% endif %}
+    {% if probas_spam %}
+        <hr>
+        <h1 class="display-5">LSTM Classifier</h1>
+        {% if probas_spam.LSTM > 0.5 %}
+        <h3 class="display-5 text-danger text-center">This is a spam with proba equals to {{ '%0.2f'| format(probas_spam.ETC*100|float) }}%</h3>
+        {% endif %}
+        {% if probas_spam.LSTM < 0.5 %}
+        <h3 class="display-5 text-success text-center">This is not a spam with proba equals to {{ '%0.2f'| format((1 - probas_spam.LSTM)*100|float) }}%</h3>
+        {% endif %}
+        <hr>
+        <h1 class="display-5">Multinomial Naive Bayes Classifier</h1>
+        {% if probas_spam.MNB > 0.5 %}
+        <h3 class="display-5 text-danger text-center">This is a spam with proba equals to {{ '%0.2f'| format(probas_spam.ETC*100|float) }}%</h3>
+        {% endif %}
+        {% if probas_spam.MNB < 0.5 %}
+        <h3 class="display-5 text-success text-center">This is not a spam with proba equals to {{ '%0.2f'| format((1 - probas_spam.MNB)*100|float) }}%</h3>
+        {% endif %}
+        <hr>
+        <h1 class="display-6">Extra Tree Classifier</h1>
+        {% if probas_spam.ETC > 0.5 %}
+        <h3 class="display-5 text-danger text-center">This is a spam with proba equals to {{ '%0.2f'| format(probas_spam.ETC*100|float)}}%</h3>
+        {% endif %}
+        {% if probas_spam.ETC < 0.5 %}
+        <h3 class="display-5 text-success text-center">This is not a spam with proba equals to {{ '%0.2f'| format((1 - probas_spam.ETC)*100|float) }}%</h3>
+        {% endif %}
+    {% endif %}
+    </div>  
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
